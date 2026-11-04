@@ -1,0 +1,22 @@
+name: Build PS2 ELF
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build slope.elf with ps2dev
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src ps2dev/ps2dev:latest \
+            sh -c "apk add --no-cache make && make"
+
+      - name: Upload slope.elf
+        uses: actions/upload-artifact@v4
+        with:
+          name: slope-elf
+          path: slope.elf
